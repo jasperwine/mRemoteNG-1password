@@ -91,6 +91,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Credential\Repositories\OnePasswordConfig.cs" />
+    <Compile Include="Credential\Repositories\OnePasswordCredentialRepository.cs" />
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
