@@ -1,3 +1,4 @@
+// mRemoteNG/Credential/Repositories/OnePasswordCredentialRepository.cs
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +15,9 @@ namespace mRemoteNG.Credential.Repositories
         public bool IsReadOnly => true;
         public List<ICredentialRecord> CredentialRecords { get; } = new List<ICredentialRecord>();
 
+        public event EventHandler<CollectionUpdatedEventArgs<ICredentialRecord>> CredentialsUpdated;
+        public event EventHandler RepositoryConfigUpdated;
+
         public OnePasswordCredentialRepository(ICredentialRepositoryConfig config)
         {
             Config = config ?? throw new ArgumentNullException(nameof(config));
@@ -25,12 +29,14 @@ namespace mRemoteNG.Credential.Repositories
 
             try
             {
+                // List all Login items in the specified vault
                 string listArgs = $"item list --vault \"{Config.Source}\" --categories Login --format json";
                 string listOutput = RunOpCommand(listArgs);
                 var items = JsonConvert.DeserializeObject<List<ItemSummary>>(listOutput);
 
                 foreach (var item in items)
                 {
+                    // Fetch full item details
                     string getArgs = $"item get \"{item.Id}\" --format json";
                     string fullOutput = RunOpCommand(getArgs);
                     var fullItem = JsonConvert.DeserializeObject<FullItem>(fullOutput);
@@ -52,10 +58,12 @@ namespace mRemoteNG.Credential.Repositories
                         CredentialRecords.Add(record);
                     }
                 }
+
+                // Raise event to notify UI of updated credentials
+                CredentialsUpdated?.Invoke(this, new CollectionUpdatedEventArgs<ICredentialRecord>(ActionType.Added, CredentialRecords));
             }
             catch (Exception ex)
             {
-                // Use mRemoteNG's logging if available, or fall back to debug
                 System.Diagnostics.Trace.WriteLine($"1Password Load Error: {ex.Message}");
                 throw;
             }
@@ -72,7 +80,7 @@ namespace mRemoteNG.Credential.Repositories
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "op", // Or full path if needed
+                    FileName = "op", // Ensure 'op' is in PATH or specify full path
                     Arguments = arguments,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
