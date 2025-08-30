@@ -1,5 +1,6 @@
 <#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ output extension=".cs" #>
+<#@ include file="AssemblyInfo.ttinclude" #>
 <#@ parameter name="platformType" type="System.String" #>
 <#@ import namespace="System" #>
 
