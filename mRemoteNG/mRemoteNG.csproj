@@ -151,7 +151,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.NETCore.Platforms" />
     <PackageReference Include="Microsoft.NETCore.Targets" />
-    <PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost" Version="17.14.40265" />
+    <PackageReference Remove="Microsoft.VisualStudio.TextTemplating.VSHost" Version="17.14.40265" />
     <PackageReference Include="Microsoft.Web.WebView2" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     <PackageReference Include="MySql.Data" />
