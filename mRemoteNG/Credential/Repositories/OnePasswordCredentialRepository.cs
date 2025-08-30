@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
 using Newtonsoft.Json;
 using mRemoteNG.Credential;
 using mRemoteNG.Tools.CustomCollections;
@@ -14,7 +15,8 @@ namespace mRemoteNG.Credential.Repositories
         public ICredentialRepositoryConfig Config { get; }
         public string TypeName => "OnePassword";
         public bool IsReadOnly => true;
-        public List<ICredentialRecord> CredentialRecords { get; } = new();
+        public IList<ICredentialRecord> CredentialRecords { get; } = new List<ICredentialRecord>();
+        public bool IsLoaded { get; private set; } = false;
 
         public event EventHandler<CollectionUpdatedEventArgs<ICredentialRecord>>? CredentialsUpdated;
         public event EventHandler? RepositoryConfigUpdated;
@@ -26,18 +28,21 @@ namespace mRemoteNG.Credential.Repositories
 
         public void Load()
         {
+            LoadCredentials(null);
+        }
+
+        public void LoadCredentials(SecureString key)
+        {
             CredentialRecords.Clear();
 
             try
             {
-                // List all Login items in the specified vault
                 string listArgs = $"item list --vault \"{Config.Source}\" --categories Login --format json";
                 string listOutput = RunOpCommand(listArgs);
                 var items = JsonConvert.DeserializeObject<List<ItemSummary>>(listOutput);
 
                 foreach (var item in items)
                 {
-                    // Fetch full item details
                     string getArgs = $"item get \"{item.Id}\" --format json";
                     string fullOutput = RunOpCommand(getArgs);
                     var fullItem = JsonConvert.DeserializeObject<FullItem>(fullOutput);
@@ -50,7 +55,7 @@ namespace mRemoteNG.Credential.Repositories
                     {
                         var record = new CredentialRecord
                         {
-                            Id = Guid.NewGuid(), // 1Password IDs are strings; generate GUID
+                            Id = Guid.NewGuid(),
                             Title = item.Title,
                             Username = username,
                             Password = password,
@@ -60,19 +65,27 @@ namespace mRemoteNG.Credential.Repositories
                     }
                 }
 
-                // Notify UI of updated credentials
+                IsLoaded = true;
                 CredentialsUpdated?.Invoke(this, new CollectionUpdatedEventArgs<ICredentialRecord>(ActionType.Added, CredentialRecords));
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.WriteLine($"1Password Load Error: {ex.Message}");
+                File.AppendAllText("1password.log", $"Error: {ex.Message}\n");
                 throw;
             }
         }
 
-        public void Save()
+        public void SaveCredentials(SecureString key)
         {
             throw new NotImplementedException("1Password repository is read-only.");
+        }
+
+        public void UnloadCredentials()
+        {
+            CredentialRecords.Clear();
+            IsLoaded = false;
+            CredentialsUpdated?.Invoke(this, new CollectionUpdatedEventArgs<ICredentialRecord>(ActionType.Removed, new List<ICredentialRecord>()));
         }
 
         private string RunOpCommand(string arguments)
@@ -81,7 +94,7 @@ namespace mRemoteNG.Credential.Repositories
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "op", // Ensure 'op' is in PATH or specify full path
+                    FileName = "op",
                     Arguments = arguments,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
