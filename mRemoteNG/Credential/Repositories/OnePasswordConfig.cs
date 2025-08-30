@@ -15,7 +15,7 @@ namespace mRemoteNG.Credential.Repositories
 
         public override bool Equals(object obj)
         {
-            if (!(obj is OnePasswordConfig other)) return false;
+            if (obj is not OnePasswordConfig other) return false;
             return Id == other.Id && Title == other.Title && Source == other.Source && EncryptionKey == other.EncryptionKey;
         }
 

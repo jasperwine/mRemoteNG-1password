@@ -14,10 +14,10 @@ namespace mRemoteNG.Credential.Repositories
         public ICredentialRepositoryConfig Config { get; }
         public string TypeName => "OnePassword";
         public bool IsReadOnly => true;
-        public List<ICredentialRecord> CredentialRecords { get; } = new List<ICredentialRecord>();
+        public List<ICredentialRecord> CredentialRecords { get; } = new();
 
-        public event EventHandler<CollectionUpdatedEventArgs<ICredentialRecord>> CredentialsUpdated;
-        public event EventHandler RepositoryConfigUpdated;
+        public event EventHandler<CollectionUpdatedEventArgs<ICredentialRecord>>? CredentialsUpdated;
+        public event EventHandler? RepositoryConfigUpdated;
 
         public OnePasswordCredentialRepository(ICredentialRepositoryConfig config)
         {
@@ -77,7 +77,7 @@ namespace mRemoteNG.Credential.Repositories
 
         private string RunOpCommand(string arguments)
         {
-            using (var process = new Process
+            using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -88,35 +88,34 @@ namespace mRemoteNG.Credential.Repositories
                     UseShellExecute = false,
                     CreateNoWindow = true
                 }
-            })
-            {
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
+            };
 
-                if (process.ExitCode != 0)
-                    throw new Exception($"1Password CLI error: {error}");
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+            process.WaitForExit();
 
-                return output;
-            }
+            if (process.ExitCode != 0)
+                throw new Exception($"1Password CLI error: {error}");
+
+            return output;
         }
 
         private class ItemSummary
         {
-            public string Id { get; set; }
-            public string Title { get; set; }
+            public string Id { get; set; } = string.Empty;
+            public string Title { get; set; } = string.Empty;
         }
 
         private class FullItem
         {
-            public List<Field> Fields { get; set; } = new List<Field>();
+            public List<Field> Fields { get; set; } = new();
         }
 
         private class Field
         {
-            public string Label { get; set; }
-            public string Value { get; set; }
+            public string Label { get; set; } = string.Empty;
+            public string Value { get; set; } = string.Empty;
         }
     }
 }
