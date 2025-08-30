@@ -28,21 +28,21 @@ jobs:
         with:
           vs-version: '17.14.12'
           
-      #- name: (03) Install and run dotnet-t4 to transform T4 templates
-      #  shell: pwsh
-      #  run: |
-      #    dotnet tool install --global dotnet-t4
+      - name: (03) Install and run dotnet-t4 to transform T4 templates
+        shell: pwsh
+        run: |
+          dotnet tool install --global dotnet-t4
 
           # Refresh PATH to include global tools
-      #    $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
+          $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
       
-      #    $interopPath = "$env:GITHUB_WORKSPACE\mRemoteNG\libs\Microsoft.VisualStudio.Interop.dll"
-      #    $ttFile = "$env:GITHUB_WORKSPACE\mRemoteNG\Properties\AssemblyInfo.tt"
+          $interopPath = "$env:GITHUB_WORKSPACE\mRemoteNG\libs\Microsoft.VisualStudio.Interop.dll"
+          $ttFile = "$env:GITHUB_WORKSPACE\mRemoteNG\Properties\AssemblyInfo.tt"
       
-      #    Write-Host "Transforming T4 template"
-      #    t4 $ttFile -P platformType=${{ matrix.platform }}
-      #  env:
-      #    PLATFORM: '${{ matrix.platform }}'
+          Write-Host "Transforming T4 template"
+          t4 $ttFile -P platformType=${{ matrix.platform }}
+        env:
+          PLATFORM: '${{ matrix.platform }}'
 
 
 

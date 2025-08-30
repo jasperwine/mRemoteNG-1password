@@ -30,6 +30,7 @@
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <UserSecretsId>1307e3e3-38d6-41ee-8301-0a9bae87038b</UserSecretsId>
     <NeutralLanguage>en</NeutralLanguage>
+    <NoWarn>$(NoWarn);CS8625;NU1701</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DefineConstants>DEBUG</DefineConstants>
@@ -138,6 +139,7 @@
     <PackageReference Include="BouncyCastle.Cryptography" />
     <PackageReference Include="Castle.Core" />
     <PackageReference Include="ConsoleControl" />
+    <PackageReference Include="ConsoleControlAPI" />
     <PackageReference Include="Cucumber.Messages" />
     <PackageReference Include="DockPanelSuite" />
     <PackageReference Include="DockPanelSuite.ThemeVS2015" />
@@ -149,7 +151,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.NETCore.Platforms" />
     <PackageReference Include="Microsoft.NETCore.Targets" />
-    <PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost" />
+    <PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost" Version="17.14.40265" />
     <PackageReference Include="Microsoft.Web.WebView2" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     <PackageReference Include="MySql.Data" />
