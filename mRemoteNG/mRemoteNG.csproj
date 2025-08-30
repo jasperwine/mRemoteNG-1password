@@ -205,7 +205,9 @@
     <PackageReference Include="VncSharpCore" />
     <PackageReference Include="ZstdSharp.Port" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup>    
+    <Compile Include="Credential\Repositories\OnePasswordConfig.cs" />
+    <Compile Include="Credential\Repositories\OnePasswordCredentialRepository.cs" />
     <Compile Update="Language\Language.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

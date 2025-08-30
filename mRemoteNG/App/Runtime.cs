@@ -48,7 +48,15 @@ namespace mRemoteNG.App
 
         public static SecureString EncryptionKey { get; set; } = new RootNodeInfo(RootNodeType.Connection).PasswordString.ConvertToSecureString();
 
-        public static ICredentialRepositoryList CredentialProviderCatalog { get; } = new CredentialRepositoryList();
+        public static ICredentialRepositoryList CredentialProviderCatalog { get; } = InitializeCredentialCatalog();
+
+        private static ICredentialRepositoryList InitializeCredentialCatalog()
+        {
+            var catalog = new CredentialRepositoryList();
+            catalog.AddProvider(new BuiltInCredentialRepository(new BuiltInCredentialRepositoryConfig()));
+            catalog.AddProvider(new OnePasswordCredentialRepository(new OnePasswordConfig()));
+            return catalog;
+        }
 
         public static ConnectionInitiator ConnectionInitiator { get; set; } = new ConnectionInitiator();
 
