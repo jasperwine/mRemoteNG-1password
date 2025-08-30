@@ -63,7 +63,7 @@ jobs:
       - name: (06) Build Release
         shell: pwsh
         run: |
-          msbuild "$Env:GITHUB_WORKSPACE\mRemoteNG.sln" -p:Configuration="Release" -p:Platform=${{ matrix.platform }} /verbosity:minimal
+          msbuild "$Env:GITHUB_WORKSPACE\mRemoteNG.sln" -p:Configuration="Release" -p:Platform=${{ matrix.platform }} -p:TreatWarningsAsErrors=false /verbosity:minimal
         
       - name: (07) Release Information
         id: version

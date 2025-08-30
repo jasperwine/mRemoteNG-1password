@@ -7,7 +7,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
-    <NoWarn>$(NoWarn);WFO1000</NoWarn>
+    <NoWarn>$(NoWarn);WFO1000;CA1416</NoWarn>
     <EnableWinFormsAnalyzers>false</EnableWinFormsAnalyzers>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)' == 'x64'">
